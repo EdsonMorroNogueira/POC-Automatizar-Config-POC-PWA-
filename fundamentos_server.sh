@@ -6,7 +6,7 @@ sudo ufw enable
 
 # Instalar Nginx
 sudo apt update
-sudo apt install nginx -y
+sudo apt install nginx
 
 # Configurar Firewall do nginx
 sudo ufw allow 'Nginx Full'
@@ -145,8 +145,6 @@ sudo apt install certbot python3-certbot-nginx
 
 # Permitir conexão HTTPS com o dominio
 sudo certbot --nginx -d $domainName
-yes
-yes
 
 # Verificando renovação
 sudo systemctl status certbot.timer
