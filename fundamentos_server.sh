@@ -46,11 +46,38 @@ server {
 }
 EOF
 
+sudo tee /etc/nginx/sites-available/$domainName > /dev/null <<EOF
+server {
+
+    include mime.types;
+    types {
+        application/manifest+json webmanifest;
+    }
+
+    listen 80;
+    listen [::]:80;
+
+    root /var/www/$domainName/html/$pathIndex;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name $domainName www.$domainName;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+EOF
+
 # Linkar a config do available com o enabled
 sudo ln -s /etc/nginx/sites-available/$domainName /etc/nginx/sites-enabled/
 
+sudo ln -s /etc/nginx/sites-available/devpwa.ddns.net /etc/nginx/sites-enabled/
+
+sudo rm /etc/nginx/sites-enabled/devpwa.ddns.net
+
+
 # Evitando problema de hash bucket
-cat<<EOF > /etc/nginx/nginx.conf
+sudo tee /etc/nginx/nginx.conf > /dev/null <<EOF
 user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
@@ -145,6 +172,8 @@ sudo apt install certbot python3-certbot-nginx
 
 # Permitir conexão HTTPS com o dominio
 sudo certbot --nginx -d $domainName
+
+# COLOCAR COISA PARA LER EMAIL
 
 # Verificando renovação
 sudo systemctl status certbot.timer
